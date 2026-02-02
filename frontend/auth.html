@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EventBright</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- RESET & BASE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body {
+            background-color: #f8f9fa; /* Light grey background for page */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .auth-container {
+            background: white;
+            width: 100%;
+            max-width: 1100px;
+            min-height: 700px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- LEFT SIDE (Gradient) --- */
+        .auth-left {
+            flex: 1;
+            background: linear-gradient(135deg, #2563EB 0%, #F97316 100%); /* Blue to Orange */
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+            position: relative;
+        }
+
+        .auth-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .auth-logo i { font-size: 1.8rem; }
+
+        .left-content { margin-top: 40px; }
+        .left-content h1 { font-size: 2.5rem; margin-bottom: 20px; font-weight: 700; line-height: 1.2; }
+        .left-content p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 40px; line-height: 1.6; }
+
+        .features-list { list-style: none; }
+        .features-list li { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
+        .check-icon {
+            background: rgba(255,255,255,0.2);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+        }
+        .feature-text h4 { font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
+        .feature-text p { font-size: 0.9rem; opacity: 0.8; }
+
+        /* --- RIGHT SIDE (Form) --- */
+        .auth-right {
+            flex: 1;
+            background: white;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Toggle Switch */
+        .auth-toggle {
+            background: #F3F4F6;
+            border-radius: 50px;
+            padding: 5px;
+            display: flex;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .toggle-btn {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .toggle-btn.active {
+            background: white;
+            color: #111;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Form Header */
+        .form-header { text-align: center; margin-bottom: 30px; }
+        .form-header h2 { font-size: 1.8rem; margin-bottom: 10px; color: #111; }
+        .form-header p { color: #666; font-size: 0.95rem; }
+
+        /* Inputs */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 8px; }
+        .input-wrapper { position: relative; }
+        .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9CA3AF; }
+        
+        .form-input {
+            width: 100%;
+            background: #F3F4F6; /* Light grey fill like design */
+            border: 1px solid transparent;
+            padding: 14px 15px 14px 40px; /* Padding left for icon */
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            transition: 0.3s;
+        }
+        .form-input:focus { background: white; border-color: #2563EB; outline: none; }
+
+        /* Extras (Remember Me / Forgot Password) */
+        .form-extras { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; font-size: 0.9rem; }
+        .remember-me { display: flex; align-items: center; gap: 8px; color: #555; cursor: pointer; }
+        .remember-me input { accent-color: #2563EB; width: 16px; height: 16px; }
+        .forgot-link { color: #2563EB; font-weight: 600; text-decoration: none; }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            background: #2563EB;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 30px;
+        }
+        .btn-primary:hover { background: #1d4ed8; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+
+        /* Divider */
+        .divider { display: flex; align-items: center; margin-bottom: 30px; color: #9CA3AF; font-size: 0.9rem; }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #E5E7EB; }
+        .divider span { padding: 0 15px; }
+
+        /* Social Buttons */
+        .social-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .btn-social {
+            background: white;
+            border: 1px solid #E5E7EB;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-social:hover { background: #F9FAFB; border-color: #D1D5DB; }
+
+        /* Guest Link */
+        .guest-link { text-align: center; display: block; color: #666; font-weight: 600; font-size: 0.9rem; margin-top: 10px; }
+        .guest-link:hover { color: #333; }
+
+        /* Messages */
+        .message-box { padding: 10px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 15px; display: none; text-align: center; }
+        .error-msg { background: #FEE2E2; color: #991B1B; }
+        .success-msg { background: #D1FAE5; color: #065F46; }
+
+        /* Form Visibility */
+        .auth-form { display: none; }
+        .auth-form.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .auth-container { flex-direction: column; max-width: 500px; }
+            .auth-left { padding: 40px; }
+            .auth-right { padding: 40px; }
+            .left-content h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        
+        <div class="auth-left">
+            <div class="auth-logo">
+                <i class="fa-regular fa-calendar-check"></i> EventBright.com
+            </div>
+            
+            <div class="left-content">
+                <h1>Welcome Back!</h1>
+                <p>Access your account to manage tickets, host events, and discover amazing experiences.</p>
+                
+                <ul class="features-list">
+                    <li>
+                        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                        <div class="feature-text">
+                            <h4>Manage Your Tickets</h4>
+                            <p>Access all your event tickets in one place</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                        <div class="feature-text">
+                            <h4>Host Events</h4>
+                            <p>Create and manage your own events</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                        <div class="feature-text">
+                            <h4>Discover Events</h4>
+                            <p>Get personalized event recommendations</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="auth-right">
+            
+            <div class="auth-toggle">
+                <button class="toggle-btn active" onclick="switchTab('login')">Login</button>
+                <button class="toggle-btn" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <div id="loginFormContainer" class="auth-form active">
+                <div class="form-header">
+                    <h2>Welcome Back</h2>
+                    <p>Login to access your account</p>
+                </div>
+
+                <div id="loginMessage" class="message-box"></div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="loginEmail" class="form-input" placeholder="john@example.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="form-extras">
+                        <label class="remember-me">
+                            <input type="checkbox"> Remember me
+                        </label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+            </div>
+
+            <div id="signupFormContainer" class="auth-form">
+                <div class="form-header">
+                    <h2>Create Account</h2>
+                    <p>Sign up to get started</p>
+                </div>
+
+                <div id="signupMessage" class="message-box"></div>
+
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" id="signupName" class="form-input" placeholder="John Doe" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="signupEmail" class="form-input" placeholder="john@example.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required minlength="6">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Sign Up</button>
+                </form>
+            </div>
+
+            <div class="divider"><span>Or continue with</span></div>
+
+            <div class="social-buttons">
+                <button class="btn-social"><i class="fa-brands fa-google"></i> Google</button>
+                <button class="btn-social"><i class="fa-brands fa-facebook"></i> Facebook</button>
+            </div>
+
+            <a href="index.html" class="guest-link">Continue as Guest</a>
+
+        </div>
+    </div>
+
+    <script>
+        // --- UI Logic: Switch Tabs ---
+        function switchTab(tab) {
+            const loginBtn = document.querySelectorAll('.toggle-btn')[0];
+            const signupBtn = document.querySelectorAll('.toggle-btn')[1];
+            const loginForm = document.getElementById('loginFormContainer');
+            const signupForm = document.getElementById('signupFormContainer');
+
+            // Clear messages
+            document.querySelectorAll('.message-box').forEach(el => el.style.display = 'none');
+
+            if (tab === 'login') {
+                loginBtn.classList.add('active');
+                signupBtn.classList.remove('active');
+                loginForm.classList.add('active');
+                signupForm.classList.remove('active');
+            } else {
+                signupBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+                signupForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+        }
+
+        // --- Helper: Show Message ---
+        function showMessage(elementId, text, type) {
+            const el = document.getElementById(elementId);
+            el.textContent = text;
+            el.className = `message-box ${type === 'error' ? 'error-msg' : 'success-msg'}`;
+            el.style.display = 'block';
+        }
+
+        // --- 1. HANDLE LOGIN ---
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+
+            try {
+                const res = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    // SAVE NAME
+                    const userName = (data.user && data.user.name) ? data.user.name : (data.name || "User");
+                    localStorage.setItem('username', userName);
+
+                    showMessage('loginMessage', 'Login successful! Redirecting...', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 1000);
+                } else {
+                    showMessage('loginMessage', data.error || 'Login failed', 'error');
+                }
+            } catch (err) {
+                showMessage('loginMessage', 'Network error. Check server.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Login';
+            }
+        });
+
+        // --- 2. HANDLE SIGNUP ---
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+
+            btn.disabled = true;
+            btn.textContent = 'Creating Account...';
+
+            try {
+                const res = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    // SAVE NAME
+                    localStorage.setItem('username', name);
+
+                    showMessage('signupMessage', 'Account created! Redirecting...', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 1000);
+                } else {
+                    showMessage('signupMessage', data.error || 'Signup failed', 'error');
+                }
+            } catch (err) {
+                showMessage('signupMessage', 'Network error.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Sign Up';
+            }
+        });
+
+        // --- 3. AUTO REDIRECT (If already logged in) ---
+        fetch('http://localhost:5000/api/auth/me', { credentials: 'include' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.user) {
+                    localStorage.setItem('username', data.user.name);
+                    window.location.href = 'index.html';
+                }
+            })
+            .catch(() => {});
+    </script>
+
+</body>
+</html>

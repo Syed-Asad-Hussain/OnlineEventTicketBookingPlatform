@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View event details including date, time, location, price, and description. Get tickets for amazing events on EventBright.">
+    <meta name="keywords" content="event details, event tickets, buy tickets, event information">
+    <meta property="og:title" content="Event Details - EventBright">
+    <meta property="og:type" content="website">
+    <title>Event Details - EventBright</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- GENERAL SETTINGS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- HEADER --- */
+        header {
+            background: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i { color: #f05537; }
+
+        nav ul { display: flex; gap: 30px; }
+        nav ul li a { font-weight: 500; color: #555; transition: 0.3s; }
+        nav ul li a:hover, nav ul li a.active { color: #0049ff; font-weight: 600; }
+
+        .auth-buttons { display: flex; gap: 15px; align-items: center; }
+        .btn-login { font-weight: 600; }
+        .btn-signup {
+            background-color: #0049ff; color: white; padding: 10px 25px;
+            border-radius: 50px; font-weight: 600; transition: 0.3s;
+        }
+        .btn-signup:hover { background-color: #0036bd; }
+
+        /* --- MAIN CONTENT --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 5%;
+            width: 100%;
+            flex: 1;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: #0049ff;
+        }
+
+        .back-link i {
+            font-size: 0.85rem;
+        }
+
+        /* Event Details Card */
+        .event-details-container {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .event-hero {
+            position: relative;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .event-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.3;
+        }
+
+        .event-hero-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+        }
+
+        .event-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .event-hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .event-hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .event-hero-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .event-hero-meta-item i {
+            font-size: 1.1rem;
+        }
+
+        .event-content {
+            padding: 50px;
+        }
+
+        .event-price-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .price-info h3 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .price-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0049ff;
+        }
+
+        .price-value.free {
+            color: #28a745;
+        }
+
+        .btn-buy-tickets {
+            background: #0049ff;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-buy-tickets:hover {
+            background: #0036bd;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,73,255,0.3);
+        }
+
+        .event-details-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .details-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .details-section h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .details-section h3 i {
+            color: #0049ff;
+            font-size: 1.1rem;
+        }
+
+        .details-section p {
+            line-height: 1.8;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .details-section .description {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .info-item-icon {
+            width: 40px;
+            height: 40px;
+            background: #0049ff;
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+
+        .info-item-content h4 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .info-item-content p {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .loading-state, .error-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-state i, .error-state i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .loading-state p, .error-state p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #0f172a;
+            color: white;
+            padding: 60px 10% 20px 10%;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .footer-desc { color: #aaa; line-height: 1.6; font-size: 0.9rem; }
+        .footer-col h4 { margin-bottom: 20px; font-size: 1.1rem; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: #aaa; font-size: 0.9rem; transition: 0.3s; }
+        .footer-col ul li a:hover { color: white; }
+        .copyright { text-align: center; border-top: 1px solid #333; padding-top: 20px; color: #555; font-size: 0.8rem; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .event-details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .event-hero-title {
+                font-size: 1.8rem;
+            }
+
+            .event-hero-meta {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .event-content {
+                padding: 30px 20px;
+            }
+
+            .event-price-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            header { padding: 15px; }
+            nav ul { display: none; }
+            .footer-content { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <i class="fa-regular fa-calendar-check"></i> EventBright.com
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="events.html" class="active">Events</a></li>
+                <li><a href="host-event.html">Host Event</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="auth.html" class="btn-login" aria-label="Login to EventBright">Login</a>
+            <a href="auth.html" class="btn-signup" aria-label="Sign up for EventBright">Sign Up</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="events.html" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Events
+        </a>
+
+        <div id="loadingState" class="loading-state">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p>Loading event details...</p>
+        </div>
+
+        <div id="errorState" class="error-state" style="display: none;">
+            <i class="fa-solid fa-exclamation-triangle"></i>
+            <p>Event not found or failed to load.</p>
+            <a href="events.html" class="back-link" style="margin-top: 20px; display: inline-block;">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back to Events
+            </a>
+        </div>
+
+        <div id="eventDetails" class="event-details-container" style="display: none;">
+            <div class="event-hero">
+                <img id="eventImage" src="" alt="Event Image">
+                <div class="event-hero-content">
+                    <span id="eventBadge" class="event-badge"></span>
+                    <h1 id="eventTitle" class="event-hero-title"></h1>
+                    <div class="event-hero-meta">
+                        <div class="event-hero-meta-item">
+                            <i class="fa-regular fa-calendar"></i>
+                            <span id="eventDateTime"></span>
+                        </div>
+                        <div class="event-hero-meta-item">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span id="eventLocation"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-content">
+                <div class="event-price-section">
+                    <div class="price-info">
+                        <h3>Ticket Price</h3>
+                        <div id="eventPrice" class="price-value"></div>
+                    </div>
+                    <button class="btn-buy-tickets">
+                        <i class="fa-solid fa-ticket"></i>
+                        Buy Tickets
+                    </button>
+                </div>
+
+                <div class="event-details-grid">
+                    <div class="details-section">
+                        <h3><i class="fa-solid fa-info-circle"></i> About This Event</h3>
+                        <p id="eventDescription" class="description"></p>
+                    </div>
+
+                    <div class="details-section">
+                        <h3><i class="fa-solid fa-calendar-days"></i> Event Information</h3>
+                        <div class="info-item">
+                            <div class="info-item-icon">
+                                <i class="fa-regular fa-calendar"></i>
+                            </div>
+                            <div class="info-item-content">
+                                <h4>Date & Time</h4>
+                                <p id="infoDateTime"></p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-icon">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div class="info-item-content">
+                                <h4>Location</h4>
+                                <p id="infoLocation"></p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-icon">
+                                <i class="fa-solid fa-tag"></i>
+                            </div>
+                            <div class="info-item-content">
+                                <h4>Category</h4>
+                                <p id="infoCategory"></p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-icon">
+                                <i class="fa-solid fa-dollar-sign"></i>
+                            </div>
+                            <div class="info-item-content">
+                                <h4>Price</h4>
+                                <p id="infoPrice"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <i class="fa-regular fa-calendar-check" style="color:#f05537;"></i> EventBright.com
+                </div>
+                <p class="footer-desc">Your premier platform for discovering and hosting amazing events worldwide. Join our community today.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="events.html">Browse Events</a></li>
+                    <li><a href="host-event.html">Host an Event</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="#">Music</a></li>
+                    <li><a href="#">Technology</a></li>
+                    <li><a href="#">Arts & Culture</a></li>
+                    <li><a href="#">Sports</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <ul class="contact-info">
+                    <li><i class="fa-regular fa-envelope"></i> support@eventbright.com</li>
+                    <li><i class="fa-solid fa-phone"></i> 1-800-EVENT-00</li>
+                    <li><i class="fa-solid fa-location-dot"></i> San Francisco, CA</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2025 EventBright.com. All Rights Reserved.
+        </div>
+    </footer>
+
+<script>
+        // Image mapping functions
+        function normalizeCategory(raw) {
+            if (!raw) return "general";
+            return String(raw).trim().toLowerCase();
+        }
+
+        function normalizeTitle(raw) {
+            return String(raw || "").trim().toLowerCase();
+        }
+
+        function getImageKeyword(category) {
+            const map = {
+                "food & drink": "food", "technology": "tech", "music": "concert",
+                "corporate": "business", "art": "art", "sports": "sports",
+                "education": "education", "theater": "theater", "general": "event"
+            };
+            return map[category] || "event";
+        }
+
+        const keywordImages = {
+            food: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80",
+            tech: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?w=600&q=80",
+            concert: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=1170&q=80",
+            business: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&q=80",
+            art: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600&q=80",
+            sports: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&q=80",
+            education: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80",
+            theater: "https://plus.unsplash.com/premium_photo-1682855223630-6953b8f83eb8?w=687&q=80",
+            event: "https://images.unsplash.com/photo-1638132704795-6bb223151bf7?w=1170&q=80"
+        };
+
+        const ultimateFallback = "https://images.unsplash.com/photo-1503428593586-e225b39bddfe?w=600&q=80";
+
+        function pickImageUrl(event) {
+            const categoryNorm = normalizeCategory(event.category);
+            const keyword = getImageKeyword(categoryNorm);
+            return keywordImages[keyword] || ultimateFallback;
+        }
+
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                id: params.get('id'),
+                title: params.get('title'),
+                date: params.get('date'),
+                time: params.get('time'),
+                venue: params.get('venue'),
+                city: params.get('city'),
+                category: params.get('category'),
+                price: params.get('price'),
+                description: params.get('description')
+            };
+        }
+
+        function formatPrice(priceStr) {
+            if (!priceStr || priceStr === '0' || priceStr === 'Free') return 'Free';
+            const price = parseFloat(priceStr);
+            return isNaN(price) ? 'Free' : `$${price.toFixed(2)}`;
+        }
+
+        function formatCategory(category) {
+            if (!category) return 'General';
+            return category.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+        }
+
+        // --- MAIN DISPLAY FUNCTION ---
+        function displayEventDetails(event) {
+            const imageUrl = pickImageUrl(event);
+            document.getElementById('eventImage').src = imageUrl;
+            
+            const categoryLabel = formatCategory(event.category);
+            document.getElementById('eventBadge').textContent = categoryLabel;
+            document.getElementById('eventTitle').textContent = event.title;
+
+            // Date & Time
+            const dateStr = event.date ? new Date(event.date).toLocaleDateString() : 'Date TBA';
+            const dateTime = `${dateStr} at ${event.time || 'Time TBA'}`;
+            document.getElementById('eventDateTime').textContent = dateTime;
+            document.getElementById('infoDateTime').textContent = dateTime;
+
+            // Location
+            const location = event.venue && event.city ? `${event.venue}, ${event.city}` : event.city || event.venue || 'Location TBA';
+            document.getElementById('eventLocation').textContent = location;
+            document.getElementById('infoLocation').textContent = location;
+
+            // Price
+            const price = formatPrice(event.price);
+            document.getElementById('eventPrice').textContent = price;
+            document.getElementById('infoPrice').textContent = price;
+            document.getElementById('infoCategory').textContent = categoryLabel;
+            document.getElementById('eventDescription').textContent = event.description || 'No description available.';
+
+            // ============================================================
+            // >>> BUTTON LOGIC: Connects "Buy Tickets" to Booking Page <<<
+            // ============================================================
+            const bookBtn = document.querySelector('.btn-buy-tickets');
+            if (bookBtn) {
+                bookBtn.onclick = () => {
+                    const user = localStorage.getItem('username');
+                    if (!user) {
+                        alert("Please login to buy tickets.");
+                        window.location.href = "auth.html";
+                        return;
+                    }
+
+                    // Prepare data for the booking page
+                    const bookingParams = new URLSearchParams({
+                        title: event.title,
+                        price: event.price || 0,
+                        date: dateTime, 
+                        location: location,
+                        image: imageUrl
+                    });
+
+                    // Redirect
+                    window.location.href = `booking.html?${bookingParams.toString()}`;
+                };
+            }
+        }
+
+        // --- LOAD EVENT LOGIC ---
+        async function loadEventDetails() {
+            const params = getUrlParams();
+            const loadingState = document.getElementById('loadingState');
+            const errorState = document.getElementById('errorState');
+            const eventDetails = document.getElementById('eventDetails');
+
+            // 1. Try fetching by ID
+            if (params.id) {
+                try {
+                    const res = await fetch(`http://localhost:5000/api/events/${params.id}`);
+                    if (res.ok) {
+                        const event = await res.json();
+                        displayEventDetails(event);
+                        loadingState.style.display = 'none';
+                        eventDetails.style.display = 'block';
+                        return;
+                    }
+                } catch (err) { console.error(err); }
+            }
+
+            // 2. Fallback to URL params
+            if (!params.title) {
+                loadingState.style.display = 'none';
+                errorState.style.display = 'block';
+                return;
+            }
+
+            const event = {
+                title: decodeURIComponent(params.title),
+                date: decodeURIComponent(params.date),
+                time: decodeURIComponent(params.time),
+                venue: decodeURIComponent(params.venue),
+                city: decodeURIComponent(params.city),
+                category: decodeURIComponent(params.category),
+                price: params.price,
+                description: decodeURIComponent(params.description)
+            };
+
+            displayEventDetails(event);
+            loadingState.style.display = 'none';
+            eventDetails.style.display = 'block';
+        }
+
+        window.addEventListener('DOMContentLoaded', loadEventDetails);
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 1. CHECK LOGIN STATUS ---
+// --- REPLACE YOUR EXISTING AUTH LOGIC WITH THIS ---
+
+const authButtons = document.querySelector('.auth-buttons');
+const username = localStorage.getItem('username');
+
+if (username && authButtons) {
+    // User is Logged In: Show Profile Link + Logout
+    authButtons.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="profile.html" style="text-decoration: none; color: #333; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <div style="width: 32px; height: 32px; background: #e0e7ff; color: #0049ff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-regular fa-user"></i>
+                </div>
+                Hi, ${username}
+            </a>
+
+            <button id="logoutBtn" style="background: #333; color: white; border: none; padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 0.9rem;">
+                Logout
+            </button>
+        </div>
+    `;
+
+    // Attach Logout Functionality
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try { 
+            await fetch('http://localhost:5000/api/auth/logout', { method: 'POST', credentials: 'include' }); 
+        } catch (err) {
+            console.log("Logout error", err);
+        }
+        localStorage.removeItem('username'); 
+        window.location.href = 'auth.html'; 
+    });
+}
+    });
+</script>
+
+</body>
+</html>

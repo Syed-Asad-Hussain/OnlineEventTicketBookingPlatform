@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - EventBright</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #ffffff; color: #111; }
+
+        /* HEADER */
+        header { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; }
+        .logo { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px; color: #111; }
+        .logo i { color: #f05537; }
+        nav ul { display: flex; gap: 30px; list-style: none; }
+        nav ul li a { font-weight: 500; color: #555; text-decoration: none; transition: 0.2s; }
+        nav ul li a:hover { color: #0049ff; }
+        .header-profile { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.95rem; }
+        .avatar-circle { width: 32px; height: 32px; background: #e0e7ff; color: #0049ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+        /* WELCOME BANNER */
+        .welcome-banner {
+            background: linear-gradient(90deg, #2563EB 0%, #F97316 100%);
+            border-radius: 16px;
+            padding: 40px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.2);
+        }
+        .welcome-text h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 8px; }
+        .welcome-text p { font-size: 1rem; opacity: 0.9; }
+        .banner-buttons { display: flex; gap: 12px; }
+        .btn-banner {
+            background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(4px);
+        }
+        .btn-banner:hover { background: rgba(255, 255, 255, 0.25); }
+
+        /* TABS & CONTROLS */
+        .dashboard-controls { display: flex; gap: 15px; margin-bottom: 40px; }
+        .tab-btn {
+            background: white; border: 1px solid #e5e7eb; padding: 10px 20px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; color: #374151; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s;
+        }
+        .tab-btn:hover { background: #f9fafb; }
+        .tab-btn.active { background: #111; color: white; border-color: #111; }
+
+        .section-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .section-title { font-size: 1.1rem; color: #4B5563; font-weight: 500; }
+        
+        .btn-black { background: #111; color: white; padding: 10px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-black:hover { background: #333; }
+
+        /* TICKET CARD (My Tickets) */
+        .ticket-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(480px, 1fr)); gap: 24px; }
+        .ticket-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; display: flex; transition: 0.3s; }
+        .ticket-card:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.06); transform: translateY(-2px); }
+        .ticket-img { width: 160px; height: auto; object-fit: cover; background: #eee; }
+        .ticket-content { padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .t-title { font-size: 1.1rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .t-meta { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: #6B7280; margin-bottom: 5px; }
+        .t-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f3f4f6; padding-top: 15px; margin-top: 20px; }
+        .btn-download { border: 1px solid #e5e7eb; background: white; color: #374151; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .btn-download:hover { background: #f9fafb; border-color: #d1d5db; }
+
+        /* HOSTED EVENT CARD (New Style) */
+        .hosted-card {
+            background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 25px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
+        }
+        .hosted-card:hover { box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        
+        .h-info h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: #111; }
+        .h-meta { display: flex; flex-direction: column; gap: 6px; color: #666; font-size: 0.95rem; }
+        .h-meta div { display: flex; align-items: center; gap: 8px; }
+        
+        .h-stats { display: flex; gap: 40px; text-align: center; margin: 0 30px; }
+        .stat-item { display: flex; flex-direction: column; }
+        .stat-val { font-size: 1.2rem; font-weight: 700; color: #0049ff; margin-bottom: 4px; }
+        .stat-val.green { color: #16a34a; }
+        .stat-val.black { color: #111; }
+        .stat-label { font-size: 0.85rem; color: #666; }
+
+        .h-actions { display: flex; gap: 10px; }
+        .btn-gray { background: #f3f4f6; color: #111; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+        .btn-gray:hover { background: #e5e7eb; }
+
+        .empty-state { text-align: center; padding: 60px; background: #f9fafb; border-radius: 16px; border: 1px dashed #d1d5db; margin-top: 20px; }
+        
+        @media (max-width: 900px) {
+            .hosted-card { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .h-stats { width: 100%; justify-content: space-between; margin: 0; padding: 20px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+            .welcome-banner { flex-direction: column; text-align: center; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-regular fa-calendar-check"></i> EventBright.com</div>
+        <nav>
+            <ul><li><a href="index.html">Home</a></li><li><a href="events.html">Events</a></li><li><a href="host-event.html">Host Event</a></li></ul>
+        </nav>
+        <div class="header-profile auth-buttons"></div>
+    </header>
+
+    <div class="container">
+        <div class="welcome-banner">
+            <div class="welcome-text">
+                <h1>Welcome back!</h1>
+                <p>Manage your tickets and events</p>
+            </div>
+            <div class="banner-buttons">
+                <button class="btn-banner"><i class="fa-solid fa-gear"></i> Settings</button>
+                <button id="logoutBtn" class="btn-banner"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+            </div>
+        </div>
+
+        <div class="dashboard-controls">
+            <button class="tab-btn active" onclick="switchTab('tickets')"><i class="fa-solid fa-ticket"></i> My Tickets</button>
+            <button class="tab-btn" onclick="switchTab('hosted')"><i class="fa-regular fa-calendar-plus"></i> My Hosted Events</button>
+        </div>
+
+        <div id="ticketsSection">
+            <div class="section-header-row">
+                <div class="section-title" id="ticketCountLabel">Your Tickets (0)</div>
+                <a href="events.html" class="btn-black">Browse More Events</a>
+            </div>
+            
+            <div class="ticket-grid" id="ticketGridContainer">
+                </div>
+            
+            <div id="emptyTickets" class="empty-state" style="display:none;">
+                <i class="fa-solid fa-ticket" style="font-size:3rem; color:#ccc; margin-bottom:15px;"></i>
+                <p>You haven't bought any tickets yet.</p>
+            </div>
+        </div>
+
+        <div id="hostedSection" style="display: none;">
+            <div class="section-header-row">
+                <div class="section-title" id="hostedCountLabel">Your Events (0)</div>
+                <a href="host-event.html" class="btn-black"><i class="fa-solid fa-plus"></i> Create Event</a>
+            </div>
+
+            <div id="hostedGridContainer">
+                </div>
+
+            <div id="emptyHosted" class="empty-state" style="display:none;">
+                <i class="fa-regular fa-folder-open" style="font-size:3rem; color:#ccc; margin-bottom:15px;"></i>
+                <p>You haven't hosted any events yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = localStorage.getItem('username');
+            if(!username) { window.location.href = 'auth.html'; return; }
+
+            // Header
+            document.querySelector('.header-profile').innerHTML = `<div class="avatar-circle"><i class="fa-regular fa-user"></i></div><span>Hi, ${username}</span>`;
+            document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('username'); window.location.href = 'auth.html'; });
+
+            loadTickets();
+            loadHostedEvents();
+        });
+
+        // 1. Load Tickets
+        function loadTickets() {
+            const tickets = JSON.parse(localStorage.getItem('myTickets')) || [];
+            const container = document.getElementById('ticketGridContainer');
+            const empty = document.getElementById('emptyTickets');
+            document.getElementById('ticketCountLabel').innerText = `Your Tickets (${tickets.length})`;
+
+            if(tickets.length === 0) {
+                empty.style.display = 'block'; container.innerHTML = '';
+            } else {
+                empty.style.display = 'none'; container.innerHTML = '';
+                tickets.forEach(t => {
+                    const img = t.image || "https://images.unsplash.com/photo-1503428593586-e225b39bddfe?w=600&q=80";
+                    container.innerHTML += `
+                        <div class="ticket-card">
+                            <img src="${img}" class="ticket-img">
+                            <div class="ticket-content">
+                                <div>
+                                    <div class="t-title">${t.title}</div>
+                                    <div class="t-meta"><i class="fa-regular fa-calendar"></i> ${t.date}</div>
+                                    <div class="t-meta"><i class="fa-solid fa-location-dot"></i> ${t.location || 'Online'}</div>
+                                </div>
+                                <div class="t-footer">
+                                    <span style="font-size:0.9rem; color:#666;">General Admission × ${t.qty}</span>
+                                    <button class="btn-download" onclick="generatePDF('${t.title.replace(/'/g, "\\'")}', '${t.date}', '${t.location}', '${localStorage.getItem('username')}')"><i class="fa-solid fa-download"></i> Download</button>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            }
+        }
+
+        // 2. Load Hosted Events
+        function loadHostedEvents() {
+            const events = JSON.parse(localStorage.getItem('myHostedEvents')) || [];
+            const container = document.getElementById('hostedGridContainer');
+            const empty = document.getElementById('emptyHosted');
+            document.getElementById('hostedCountLabel').innerText = `Your Events (${events.length})`;
+
+            if(events.length === 0) {
+                empty.style.display = 'block'; container.innerHTML = '';
+            } else {
+                empty.style.display = 'none'; container.innerHTML = '';
+                events.forEach(ev => {
+                    // Random stats for demo
+                    const sold = Math.floor(Math.random() * 50) + 5;
+                    const rev = sold * (ev.price || 25);
+                    
+                    container.innerHTML += `
+                        <div class="hosted-card">
+                            <div class="h-info">
+                                <h3>${ev.title}</h3>
+                                <div class="h-meta">
+                                    <div><i class="fa-regular fa-calendar"></i> ${ev.date || 'Date TBA'}</div>
+                                    <div><i class="fa-solid fa-location-dot"></i> ${ev.location || 'Online'}</div>
+                                </div>
+                            </div>
+                            <div class="h-stats">
+                                <div class="stat-item"><div class="stat-val">${sold}</div><div class="stat-label">Tickets Sold</div></div>
+                                <div class="stat-item"><div class="stat-val green">$${rev}</div><div class="stat-label">Revenue</div></div>
+                                <div class="stat-item"><div class="stat-val black">${ev.capacity || 100}</div><div class="stat-label">Capacity</div></div>
+                            </div>
+                            <div class="h-actions">
+                                <button class="btn-gray">Edit Event</button>
+                                <button class="btn-gray">View Analytics</button>
+                            </div>
+                        </div>`;
+                });
+            }
+        }
+
+        function switchTab(tab) {
+            const tSec = document.getElementById('ticketsSection');
+            const hSec = document.getElementById('hostedSection');
+            const btns = document.querySelectorAll('.tab-btn');
+            
+            btns.forEach(b => b.classList.remove('active'));
+            if(tab === 'tickets') {
+                tSec.style.display = 'block'; hSec.style.display = 'none'; btns[0].classList.add('active');
+            } else {
+                tSec.style.display = 'none'; hSec.style.display = 'block'; btns[1].classList.add('active');
+            }
+        }
+
+        function generatePDF(title, date, location, user) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text(`Ticket: ${title}`, 20, 20);
+            doc.save("ticket.pdf");
+        }
+    </script>
+</body>
+</html>

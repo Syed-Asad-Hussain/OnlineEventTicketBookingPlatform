@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Host your event on EventBright. Create and manage events, sell tickets, and reach thousands of attendees.">
+    <meta name="keywords" content="host event, create event, event management, sell tickets">
+    <meta property="og:title" content="Host Your Event - EventBright">
+    <meta property="og:description" content="Create and manage your events on EventBright">
+    <title>Host Your Event - EventBright</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- GENERAL SETTINGS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- HEADER --- */
+        header {
+            background: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i { color: #f05537; }
+
+        nav ul { display: flex; gap: 30px; }
+        nav ul li a { font-weight: 500; color: #555; transition: 0.3s; }
+        nav ul li a:hover, nav ul li a.active { color: #0049ff; font-weight: 600; }
+
+        .auth-buttons { display: flex; gap: 15px; align-items: center; }
+        .btn-login { font-weight: 600; }
+        .btn-signup {
+            background-color: #0049ff; color: white; padding: 10px 25px;
+            border-radius: 50px; font-weight: 600; transition: 0.3s;
+        }
+        .btn-signup:hover { background-color: #0036bd; }
+
+        /* --- HOST PAGE SPECIFIC STYLES --- */
+        
+        /* Sub-header with Back button */
+        .sub-header {
+            background: white;
+            padding: 15px 5%;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        /* Hero Banner */
+        .host-hero {
+            background: linear-gradient(90deg, #005bea 0%, #ff8c42 100%);
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .host-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .host-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Form Container */
+        .form-wrapper {
+            max-width: 900px;
+            margin: 0 auto 80px auto;
+            padding: 0 20px;
+        }
+
+        /* Form Sections (Cards) */
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #eee;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+        }
+        
+        .section-header i {
+            color: #0049ff;
+        }
+
+        /* Input Styling */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .row-3 {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input[type="text"], 
+        input[type="number"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #f3f4f6;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            font-size: 1rem;
+            color: #333;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            background-color: white;
+            border-color: #0049ff;
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        /* Ticket Section Specifics */
+        .ticket-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px dashed #ddd;
+        }
+        
+        .ticket-box h4 {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .ticket-box input {
+            background: white;
+            border: 1px solid #ddd;
+        }
+
+        .btn-add-ticket {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            color: #333;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-add-ticket:hover {
+            background: #f8f9fa;
+            border-color: #bbb;
+        }
+
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .btn-submit {
+            background-color: #0049ff;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            flex: 1;
+            transition: 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #0036bd;
+        }
+
+        .btn-cancel {
+            background: white;
+            border: 1px solid #ddd;
+            color: #333;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+        
+        .btn-cancel:hover {
+            background: #f8f9fa;
+        }
+
+        .terms-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+            font-size: 0.85rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #0f172a;
+            color: white;
+            padding: 60px 10% 20px 10%;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .footer-desc { color: #aaa; line-height: 1.6; font-size: 0.9rem; }
+        .footer-col h4 { margin-bottom: 20px; font-size: 1.1rem; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: #aaa; font-size: 0.9rem; transition: 0.3s; }
+        .footer-col ul li a:hover { color: white; }
+        .copyright { text-align: center; border-top: 1px solid #333; padding-top: 20px; color: #555; font-size: 0.8rem; }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .row, .row-3 { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; }
+            .form-actions { flex-direction: column; }
+            .btn-submit, .btn-cancel { width: 100%; }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('username');
+            
+            // 1. Check if user is logged in
+            if (!user) {
+                alert("You must be logged in to host an event!");
+                window.location.href = "auth.html"; // Kick them out
+            } 
+            else {
+                // 2. Auto-fill the organizer name if logged in
+                const organizerInput = document.querySelector('input[placeholder="Your name or organization"]');
+                if(organizerInput) {
+                    organizerInput.value = user;
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <i class="fa-regular fa-calendar-check"></i> EventBright.com
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="host-event.html" class="active">Host Event</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="auth.html" class="btn-login" aria-label="Login to EventBright">Login</a>
+            <a href="auth.html" class="btn-signup" aria-label="Sign up for EventBright">Sign Up</a>
+        </div>
+    </header>
+
+    <div class="sub-header">
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back</a>
+    </div>
+
+    <div class="host-hero">
+        <h1>Host Your Event</h1>
+        <p>Create and manage your event in minutes. Reach thousands of potential attendees.</p>
+    </div>
+
+    <div class="form-wrapper">
+        <form id="eventForm" action="#">
+            
+            <div class="form-section">
+                <div class="section-header">
+                    <i class="fa-regular fa-file-lines"></i> Basic Information
+                </div>
+
+                <div class="input-group">
+                    <label>Event Title *</label>
+                    <input type="text" placeholder="e.g., Summer Music Festival 2025">
+                </div>
+
+                <div class="input-group">
+                    <label>Category *</label>
+                    <select>
+                        <option value="" disabled selected>Select a category</option>
+                        <option>Music</option>
+                        <option>Technology</option>
+                        <option>Art</option>
+                        <option>Food & Drink</option>
+                        <option>Business</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Event Description *</label>
+                    <textarea placeholder="Describe your event, what attendees can expect, and any special details..."></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Organizer Name *</label>
+                    <input type="text" placeholder="Your name or organization">
+                </div>
+
+                <div class="input-group">
+                    <label for="eventImage">Event Image</label>
+                    <input type="file" id="eventImage" name="image" accept="image/*" aria-label="Upload event image">
+                    <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">Recommended: 1200x600px, max 5MB (JPEG, PNG, GIF, WebP)</small>
+                    <div id="imagePreview" style="margin-top: 10px; display: none;">
+                        <img id="previewImg" src="" alt="Preview" style="max-width: 300px; border-radius: 8px; border: 2px solid #ddd;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-header">
+                    <i class="fa-regular fa-calendar"></i> Date & Location
+                </div>
+
+                <div class="row">
+                    <div class="input-group">
+                        <label>Event Date *</label>
+                        <input type="date">
+                    </div>
+                    <div class="input-group">
+                        <label>Event Time *</label>
+                        <input type="time">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group">
+                        <label>Venue Name *</label>
+                        <input type="text" placeholder="e.g., Central Park Amphitheater">
+                    </div>
+                    <div class="input-group">
+                        <label>City, State *</label>
+                        <input type="text" placeholder="e.g., New York, NY">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-header">
+                    <i class="fa-solid fa-dollar-sign"></i> Ticket Types & Pricing
+                </div>
+
+                <div class="ticket-box">
+                    <h4>Ticket Type #1</h4>
+                    <div class="row-3">
+                        <div class="input-group">
+                            <label>Ticket Name *</label>
+                            <input type="text" placeholder="General Admission" value="General Admission">
+                        </div>
+                        <div class="input-group">
+                            <label>Price ($) *</label>
+                            <input type="number" placeholder="0.00">
+                        </div>
+                        <div class="input-group">
+                            <label>Available Tickets *</label>
+                            <input type="number" placeholder="100">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-add-ticket">+ Add Another Ticket Type</button>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Submit Event for Review</button>
+                <button type="button" class="btn-cancel">Cancel</button>
+            </div>
+            
+            <p class="terms-text">By submitting, you agree to our event hosting terms and conditions</p>
+
+        </form>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <i class="fa-regular fa-calendar-check" style="color:#f05537;"></i> EventBright.com
+                </div>
+                <p class="footer-desc">Your premier platform for discovering and hosting amazing events worldwide. Join our community today.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="events.html">Browse Events</a></li>
+                    <li><a href="host-event.html">Host an Event</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="#">Music</a></li>
+                    <li><a href="#">Technology</a></li>
+                    <li><a href="#">Arts & Culture</a></li>
+                    <li><a href="#">Sports</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <ul class="contact-info">
+                    <li><i class="fa-regular fa-envelope"></i> support@eventbright.com</li>
+                    <li><i class="fa-solid fa-phone"></i> 1-800-EVENT-00</li>
+                    <li><i class="fa-solid fa-location-dot"></i> San Francisco, CA</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2025 EventBright.com. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script>
+      // Image preview
+      document.getElementById('eventImage').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            document.getElementById('previewImg').src = e.target.result;
+            document.getElementById('imagePreview').style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Form submission handler: collects values and posts to backend
+      document.querySelector("#eventForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const form = e.target;
+        const submitBtn = form.querySelector('.btn-submit');
+        const originalText = submitBtn.textContent;
+
+        // Safely select inputs by their placeholders/types
+        const titleInput = form.querySelector("input[placeholder='e.g., Summer Music Festival 2025']");
+        const categorySelect = form.querySelector("select");
+        const descriptionTextarea = form.querySelector("textarea[placeholder='Describe your event, what attendees can expect, and any special details...']");
+        const organizerInput = form.querySelector("input[placeholder='Your name or organization']");
+        const dateInput = form.querySelector("input[type='date']");
+        const timeInput = form.querySelector("input[type='time']");
+        const venueInput = form.querySelector("input[placeholder='e.g., Central Park Amphitheater']");
+        const cityInput = form.querySelector("input[placeholder='e.g., New York, NY']");
+        const priceInput = form.querySelector("input[placeholder='0.00']");
+        const imageInput = document.getElementById('eventImage');
+
+        // Validation
+        if (!titleInput?.value.trim()) {
+          alert('Please enter an event title');
+          return;
+        }
+        if (!dateInput?.value) {
+          alert('Please select an event date');
+          return;
+        }
+        if (!timeInput?.value) {
+          alert('Please select an event time');
+          return;
+        }
+
+        // Create FormData for file upload
+        const formData = new FormData();
+        formData.append('title', titleInput.value.trim());
+        formData.append('category', categorySelect ? categorySelect.value : '');
+        formData.append('description', descriptionTextarea ? descriptionTextarea.value.trim() : '');
+        formData.append('date', dateInput.value);
+        formData.append('time', timeInput.value);
+        formData.append('venue', venueInput ? venueInput.value.trim() : '');
+        formData.append('city', cityInput ? cityInput.value.trim() : '');
+        formData.append('price', priceInput ? parseFloat(priceInput.value || "0") : 0);
+        
+        if (imageInput.files[0]) {
+          formData.append('image', imageInput.files[0]);
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+
+        try {
+          const res = await fetch("http://localhost:5000/api/events/create", {
+            method: "POST",
+            credentials: 'include',
+            body: formData
+          });
+
+          // Attempt to parse JSON; handle non-JSON responses gracefully
+          let result;
+          try {
+            result = await res.json();
+          } catch (parseErr) {
+            result = null;
+          }
+
+          if (res.ok && result && result.message) {
+            alert(result.message);
+            window.location.href = "events.html";
+          } else if (res.ok && result && !result.message) {
+            alert("Event submitted successfully.");
+            window.location.href = "events.html";
+          } else {
+            const errorMsg = (result && (result.error || result.message || result.errors?.[0]?.msg)) 
+              ? (result.error || result.message || result.errors[0].msg) 
+              : `Server responded with status ${res.status}`;
+            alert("Error: " + errorMsg);
+          }
+        } catch (err) {
+          alert("❌ Failed to submit event: " + err.message);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      });
+
+      // Optional: Cancel button behavior to reset the form
+      const cancelBtn = document.querySelector(".btn-cancel");
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+          const form = document.querySelector("#eventForm");
+          if (form) form.reset();
+        });
+      }
+    </script>
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+        // --- 1. CHECK LOGIN STATUS ---
+// --- REPLACE YOUR EXISTING AUTH LOGIC WITH THIS ---
+
+const authButtons = document.querySelector('.auth-buttons');
+const username = localStorage.getItem('username');
+
+if (username && authButtons) {
+    // User is Logged In: Show Profile Link + Logout
+    authButtons.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="profile.html" style="text-decoration: none; color: #333; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <div style="width: 32px; height: 32px; background: #e0e7ff; color: #0049ff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-regular fa-user"></i>
+                </div>
+                Hi, ${username}
+            </a>
+
+            <button id="logoutBtn" style="background: #333; color: white; border: none; padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 0.9rem;">
+                Logout
+            </button>
+        </div>
+    `;
+
+    // Attach Logout Functionality
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try { 
+            await fetch('http://localhost:5000/api/auth/logout', { method: 'POST', credentials: 'include' }); 
+        } catch (err) {
+            console.log("Logout error", err);
+        }
+        localStorage.removeItem('username'); 
+        window.location.href = 'auth.html'; 
+    });
+}
+    });
+</script>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault(); // Stop page reload
+
+        // 1. Gather Data
+        const newEvent = {
+            id: Date.now(),
+            title: document.getElementById('eventTitle')?.value || "New Event",
+            date: document.getElementById('eventDate')?.value || "Date TBA",
+            location: document.getElementById('eventLocation')?.value || "Online",
+            price: document.getElementById('eventPrice')?.value || 0,
+            capacity: document.getElementById('eventCapacity')?.value || 100
+        };
+
+        // 2. Save to Local Storage
+        const hostedEvents = JSON.parse(localStorage.getItem('myHostedEvents')) || [];
+        hostedEvents.push(newEvent);
+        localStorage.setItem('myHostedEvents', JSON.stringify(hostedEvents));
+
+        // 3. Redirect to Profile
+        alert("Event Created Successfully!");
+        window.location.href = "profile.html";
+    });
+</script>
+    <!-- Inside host-event.html -->
+
+</body>
+</html>

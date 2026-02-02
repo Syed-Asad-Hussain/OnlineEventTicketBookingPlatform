@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EventBright - Your premier platform for discovering and hosting amazing events worldwide.">
+    <title>EventBright - Discover Amazing Events</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- GENERAL SETTINGS --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #f8f9fa; color: #333; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- NAVBAR --- */
+        header { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 24px; font-weight: 700; color: #333; display: flex; align-items: center; gap: 10px; }
+        .logo i { color: #f05537; }
+        nav ul { display: flex; gap: 30px; }
+        nav ul li a { font-weight: 500; color: #555; transition: 0.3s; }
+        nav ul li a:hover { color: #f05537; }
+        .auth-buttons { display: flex; gap: 15px; align-items: center; }
+        .btn-login { color: #333; font-weight: 600; }
+        .btn-signup { background-color: #0049ff; color: white; padding: 10px 25px; border-radius: 50px; font-weight: 600; transition: 0.3s; }
+        .btn-signup:hover { background-color: #0036bd; }
+
+        /* --- HERO SECTION --- */
+        .hero { background: linear-gradient(135deg, #005bea 0%, #ff8c42 100%); height: 500px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; padding: 0 20px; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; font-weight: 700; }
+        .hero p { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9; }
+
+        .search-container { background: rgba(255, 255, 255, 0.2); padding: 8px; border-radius: 50px; display: flex; width: 100%; max-width: 600px; backdrop-filter: blur(5px); margin-bottom: 20px; }
+        .search-container input { flex: 1; background: transparent; border: none; outline: none; padding: 15px 20px; color: white; font-size: 1rem; }
+        .search-container input::placeholder { color: rgba(255,255,255,0.8); }
+        .search-btn { background-color: #f05537; color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: 600; }
+        .search-btn:hover { background-color: #d64428; }
+
+        .hero-buttons { display: flex; gap: 15px; }
+        .btn-white { background: white; color: #0049ff; padding: 12px 30px; border-radius: 50px; font-weight: 600; }
+
+        /* --- CATEGORIES SECTION --- */
+        .categories { padding: 50px 10%; text-align: center; }
+        .cat-title { margin-bottom: 30px; color: #555; font-size: 0.9rem; }
+        .category-list { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+        .cat-item { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; }
+        .cat-item:active .icon-circle { transform: scale(0.95); } 
+        
+        .icon-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: transform 0.3s; }
+        .cat-item:hover .icon-circle { transform: translateY(-5px); }
+        .music { background: #efe5fd; color: #9b51e0; }
+        .tech { background: #e3f2fd; color: #2d9cdb; }
+        .art { background: #fce4ec; color: #e91e63; }
+        .sports { background: #e8f5e9; color: #4caf50; }
+        .education { background: #fffde7; color: #fbc02d; }
+        .food { background: #fff3e0; color: #ff9800; }
+        .corporate { background: #e8eaf6; color: #3f51b5; }
+        .theater { background: #ffebee; color: #f44336; }
+        .cat-name { font-size: 0.9rem; font-weight: 600; color: #555; }
+
+        /* --- FEATURED EVENTS --- */
+        .events-section { padding: 20px 10% 60px 10%; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .view-all { color: #0049ff; font-weight: 600; cursor: pointer; }
+        .events-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .event-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #eee; }
+        .event-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .card-image { height: 180px; background-color: #ddd; position: relative; }
+        .card-image img { width: 100%; height: 100%; object-fit: cover; }
+        .badge { position: absolute; top: 15px; right: 15px; background: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: #333; }
+        .card-content { padding: 20px; }
+        .event-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+        .event-info { display: flex; align-items: center; gap: 10px; color: #666; font-size: 0.9rem; margin-bottom: 5px; }
+        .event-info i { width: 20px; }
+        .card-footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 15px; }
+        .price { font-size: 0.9rem; color: #555; }
+        .price span { font-size: 1.2rem; font-weight: 700; color: #0049ff; }
+        .btn-details { background: #0049ff; color: white; padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; }
+
+        #no-results { display: none; text-align: center; width: 100%; grid-column: 1 / -1; padding: 20px; color: #666; font-size: 1.2rem; }
+
+        /* --- STATS SECTION --- */
+        .stats-section { display: flex; justify-content: space-around; padding: 60px 10%; background: white; text-align: center; }
+        .stat-item h2 { font-size: 2.5rem; color: #0049ff; margin-bottom: 5px; }
+        .stat-item p { color: #666; }
+
+        /* --- CTA BANNER --- */
+        .cta-banner { background: linear-gradient(90deg, #ff512f, #dd2476, #0049ff); text-align: center; padding: 80px 20px; color: white; }
+        .cta-banner h2 { font-size: 2.5rem; margin-bottom: 10px; }
+        .cta-banner p { margin-bottom: 30px; opacity: 0.9; }
+        .btn-cta-white { background: white; color: #0049ff; padding: 15px 40px; border-radius: 50px; font-weight: 700; font-size: 1.1rem; display: inline-block; }
+
+        /* --- FOOTER --- */
+        footer { background: #0f172a; color: white; padding: 60px 10% 20px 10%; }
+        .footer-content { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-logo { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .footer-desc { color: #aaa; line-height: 1.6; font-size: 0.9rem; }
+        .footer-col h4 { margin-bottom: 20px; font-size: 1.1rem; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: #aaa; font-size: 0.9rem; transition: 0.3s; }
+        .footer-col ul li a:hover { color: white; }
+        .contact-info li { color: #aaa; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+        .copyright { text-align: center; border-top: 1px solid #333; padding-top: 20px; color: #555; font-size: 0.8rem; }
+
+        @media (max-width: 768px) {
+            header { padding: 15px; }
+            nav ul { display: none; }
+            .stats-section { flex-direction: column; gap: 30px; }
+            .hero h1 { font-size: 2.5rem; }
+            .footer-content { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <i class="fa-regular fa-calendar-check"></i> EventBright.com
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="host-event.html">Host Event</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="auth.html" class="btn-login" aria-label="Login">Login</a>
+            <a href="auth.html" class="btn-signup" aria-label="Sign up">Sign Up</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Discover Amazing Events</h1>
+        <p>Find and book tickets for concerts, conferences, workshops, and more</p>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search events, locations, or categories">
+            <button class="search-btn" onclick="filterEvents()"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+        </div>
+
+        <div class="hero-buttons">
+            <a href="host-event.html" class="btn-white">Host Your Event</a>
+            <a href="about.html" style="color: white; border: 1px solid white; padding: 12px 30px; border-radius: 50px;">Learn More</a>
+        </div>
+    </section>
+
+    <section class="categories">
+        <p class="cat-title">Browse by Category</p>
+        <div class="category-list">
+            <div class="cat-item" onclick="filterByCategory('Music')">
+                <div class="icon-circle music"><i class="fa-solid fa-music"></i></div>
+                <span class="cat-name">Music</span>
+            </div>
+            <div class="cat-item" onclick="filterByCategory('Tech')">
+                <div class="icon-circle tech"><i class="fa-solid fa-laptop-code"></i></div>
+                <span class="cat-name">Tech</span>
+            </div>
+            <div class="cat-item" onclick="filterByCategory('Art')">
+                <div class="icon-circle art"><i class="fa-solid fa-palette"></i></div>
+                <span class="cat-name">Art</span>
+            </div>
+            <div class="cat-item" onclick="filterByCategory('Sports')">
+                <div class="icon-circle sports"><i class="fa-solid fa-trophy"></i></div>
+                <span class="cat-name">Sports</span>
+            </div>
+            <div class="cat-item" onclick="filterByCategory('Education')">
+                <div class="icon-circle education"><i class="fa-solid fa-graduation-cap"></i></div>
+                <span class="cat-name">Education</span>
+            </div>
+            <div class="cat-item" onclick="filterByCategory('Food')">
+                <div class="icon-circle food"><i class="fa-solid fa-utensils"></i></div>
+                <span class="cat-name">Food</span>
+            </div>
+            <div class="cat-item" onclick="filterByCategory('Corporate')">
+                <div class="icon-circle corporate"><i class="fa-solid fa-building"></i></div>
+                <span class="cat-name">Corporate</span>
+            </div>
+            <div class="cat-item" onclick="filterByCategory('Theater')">
+                <div class="icon-circle theater"><i class="fa-solid fa-masks-theater"></i></div>
+                <span class="cat-name">Theater</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="events-section">
+        <div class="section-header">
+            <h3>Featured Events</h3>
+            <a href="events.html" class="view-all">View All</a>
+        </div>
+
+        <div class="events-grid" id="eventsGrid">
+            <div class="event-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80" alt="Food">
+                    <span class="badge">Food</span>
+                </div>
+                <div class="card-content">
+                    <div class="event-title">Street Food Festival</div>
+                    <div class="event-info"><i class="fa-regular fa-calendar"></i> Nov 18, 2025 at 12:00</div>
+                    <div class="event-info"><i class="fa-solid fa-location-dot"></i> Austin, TX</div>
+                    <div class="card-footer">
+                        <div class="price">From <span>$25</span></div>
+                        <a href="event-details.html?title=Street%20Food%20Festival&date=Nov%2018%2C%202025&time=12:00&venue=Austin%20Food%20Market&city=Austin%2C%20TX&category=Food&price=25&description=Join%20us%20for%20an%20amazing%20street%20food%20festival.&image=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1555939594-58d7cb561ad1%3Fauto%3Dformat%26fit%3Dcrop%26w%3D600%26q%3D80" class="btn-details">View Details</a>
+                    </div>
+                </div>
+            </div>
+                    <div class="event-card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=600&q=80" alt="Education">
+                            <span class="badge">Education</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="event-title">Digital Marketing Workshop</div>
+                            <div class="event-meta"><i class="fa-regular fa-calendar"></i> Nov 25, 2025 at 10:00</div>
+                            <div class="event-meta"><i class="fa-solid fa-location-dot"></i> Boston, MA</div>
+                            <div class="card-footer">
+                                <div><span class="price-label">From</span> <span class="price-value">$199</span></div>
+                                <a href="event-details.html?title=Digital%20Marketing%20Workshop&date=Nov%2025%2C%202025&time=10:00&venue=Boston%20Business%20Center&city=Boston%2C%20MA&category=Education&price=199&description=Learn%20the%20latest%20digital%20marketing%20strategies%20and%20techniques%20from%20industry%20experts.%20This%20hands-on%20workshop%20covers%20SEO%2C%20social%20media%20marketing%2C%20content%20strategy%2C%20and%20analytics." class="btn-details">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+            <div class="event-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=600&q=80" alt="Art">
+                    <span class="badge">Art</span>
+                </div>
+                <div class="card-content">
+                    <div class="event-title">Art Exhibition LA</div>
+                    <div class="event-info"><i class="fa-regular fa-calendar"></i> Nov 10, 2025 at 11:00</div>
+                    <div class="event-info"><i class="fa-solid fa-location-dot"></i> Los Angeles, CA</div>
+                    <div class="card-footer">
+                        <div class="price">From <span>$35</span></div>
+                        <a href="event-details.html?title=Art%20Exhibition%20LA&date=Nov%2010%2C%202025&time=11:00&venue=Los%20Angeles%20Museum&city=Los%20Angeles%2C%20CA&category=Art&price=35&description=Experience%20contemporary%20art.&image=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1460661419201-fd4cecdf8a8b%3Fauto%3Dformat%26fit%3Dcrop%26w%3D600%26q%3D80" class="btn-details">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="no-results">
+                <i class="fa-regular fa-face-frown"></i> No events found matching your search.
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="stat-item"><h2>50K+</h2><p>Events Hosted</p></div>
+        <div class="stat-item"><h2>2M+</h2><p>Happy Customers</p></div>
+        <div class="stat-item"><h2>150+</h2><p>Cities</p></div>
+        <div class="stat-item"><h2>25+</h2><p>Event Categories</p></div>
+    </section>
+
+    <section class="cta-banner">
+        <h2>Ready to Host Your Event?</h2>
+        <p>Join thousands of organizers who trust EventBright.com</p>
+        <a href="host-event.html" class="btn-cta-white">Get Started for Free</a>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <div class="footer-logo"><i class="fa-regular fa-calendar-check" style="color:#f05537;"></i> EventBright.com</div>
+                <p class="footer-desc">Your premier platform for discovering and hosting amazing events worldwide.</p>
+            </div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="events.html">Browse Events</a></li><li><a href="host-event.html">Host an Event</a></li><li><a href="#">Pricing</a></li></ul></div>
+            <div class="footer-col"><h4>Categories</h4><ul><li><a href="#">Music</a></li><li><a href="#">Technology</a></li><li><a href="#">Arts</a></li></ul></div>
+            <div class="footer-col"><h4>Contact Us</h4><ul class="contact-info"><li><i class="fa-regular fa-envelope"></i> support@eventbright.com</li><li><i class="fa-solid fa-phone"></i> 1-800-EVENT-00</li></ul></div>
+        </div>
+        <div class="copyright">&copy; 2025 EventBright.com. All Rights Reserved.</div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 1. CHECK LOGIN STATUS ---
+// --- REPLACE YOUR EXISTING AUTH LOGIC WITH THIS ---
+
+const authButtons = document.querySelector('.auth-buttons');
+const username = localStorage.getItem('username');
+
+if (username && authButtons) {
+    // User is Logged In: Show Profile Link + Logout
+    authButtons.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="profile.html" style="text-decoration: none; color: #333; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <div style="width: 32px; height: 32px; background: #e0e7ff; color: #0049ff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-regular fa-user"></i>
+                </div>
+                Hi, ${username}
+            </a>
+
+            <button id="logoutBtn" style="background: #333; color: white; border: none; padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 0.9rem;">
+                Logout
+            </button>
+        </div>
+    `;
+
+    // Attach Logout Functionality
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try { 
+            await fetch('http://localhost:5000/api/auth/logout', { method: 'POST', credentials: 'include' }); 
+        } catch (err) {
+            console.log("Logout error", err);
+        }
+        localStorage.removeItem('username'); 
+        window.location.href = 'auth.html'; 
+    });
+}
+    });
+            // --- 2. SEARCH & FILTERING LOGIC ---
+            function filterEvents() {
+                const input = document.getElementById('searchInput');
+                const filter = input.value.toUpperCase();
+                const cards = document.getElementsByClassName('event-card');
+                const noResults = document.getElementById('no-results');
+                let hasResults = false;
+
+                for (let i = 0; i < cards.length; i++) {
+                    const card = cards[i];
+                    const textContent = card.innerText || card.textContent;
+
+                    if (textContent.toUpperCase().indexOf(filter) > -1) {
+                        card.style.display = ""; 
+                        hasResults = true;
+                    } else {
+                        card.style.display = "none";
+                    }
+                }
+
+                if (hasResults) {
+                    noResults.style.display = "none";
+                } else {
+                    noResults.style.display = "block";
+                }
+            }
+
+            // Expose function to global scope for onclick events
+            window.filterEvents = filterEvents;
+
+            window.filterByCategory = function(category) {
+                const input = document.getElementById('searchInput');
+                if(input) {
+                    input.value = category;
+                    filterEvents();
+                    document.getElementById('eventsGrid').scrollIntoView({behavior: 'smooth', block: 'start'});
+                }
+            };
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+                searchInput.addEventListener("keypress", function(event) {
+                    if (event.key === "Enter") {
+                        filterEvents();
+                    }
+                });
+            }
+    </script>
+
+
+</body>
+</html>
